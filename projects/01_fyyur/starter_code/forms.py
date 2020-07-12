@@ -116,6 +116,19 @@ class VenueForm(FlaskForm):
     facebook_link = StringField(
         'facebook_link', validators=[URL()]
     )
+    website = StringField(
+        'website'
+    )
+    seeking_talent = SelectField(
+        'seeking_talent', validators=[DataRequired()],
+        choices=[
+            ('False', 'No'),
+            ('True', 'Yes'),
+        ]
+    )
+    seeking_description = StringField(
+        'seeking_description', validators=[]
+    )
 
 class ArtistForm(FlaskForm):
     name = StringField(
@@ -215,6 +228,19 @@ class ArtistForm(FlaskForm):
     facebook_link = StringField(
         # TODO implement enum restriction
         'facebook_link', validators=[URL()]
+    )
+    website = StringField(
+        'website'
+    )
+    seeking_venue = SelectField(
+        'seeking_venue', validators=[DataRequired()],
+        choices=[
+            ('False', 'No'),
+            ('True', 'Yes'),
+        ]
+    )
+    seeking_description = StringField(
+        'seeking_description', validators=[]
     )
 
 # TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM

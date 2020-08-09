@@ -122,7 +122,7 @@ def create_app(test_config=None):
                 question = data['question'],
                 answer = data['answer'],
                 difficulty = int(data['difficulty']),
-                category = int(data['category'])
+                category = int(data['category'])+1
             )
             question.insert()
             return jsonify({
@@ -141,6 +141,21 @@ def create_app(test_config=None):
     only question that include that string within their question. 
     Try using the word "title" to start. 
     '''
+    @app.route('/questions/search', methods=['POST'])
+    def search_question():
+        try:
+            search_term = request.get_json()['searchTerm']
+        except:
+            abort(422)
+        
+        matches = Question.query.filter(Question.question.ilike('%{}%'.format(search_term)))
+        questions = [q.format() for q in matches]
+
+        return jsonify({
+            'success':True,
+            'questions':questions,
+            'total_questions':len(questions),
+        })
 
     '''
     @TODO: 
@@ -150,6 +165,25 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that 
     category to be shown. 
     '''
+    @app.route('/categories/<int:c_id>/questions', methods=['GET'])
+    def get_questions_by_category(c_id):
+        category = Category.query.filter(Category.id == c_id+1).one_or_none()
+
+        if category is None:
+            abort(404)
+
+        try:
+            questions = [q.format() for q in Question.query.filter_by(category=c_id+1).all()]
+            questions_in_page = paginate(request, questions)
+
+            return jsonify({
+                'success': True,
+                'questions': questions_in_page,
+                'total_questions': len(questions),
+                'current_category': category.type
+            })
+        except:
+            abort(422)
 
     '''
     @TODO: 
@@ -162,6 +196,35 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not. 
     '''
+    @app.route('/quizzes', methods=['POST'])
+    def get_quizz_question_question():
+        # try:
+            data = request.get_json()
+            previous_questions = data.get('previous_questions', None)
+            quiz_category = data.get('quiz_category', None)
+
+            print(previous_questions, quiz_category)
+            if quiz_category['type'] == 'click':
+                questions = [q.format() for q in Question.query.all()]
+            else:
+                questions = [q.format() for q in Question.query.filter_by(
+                    category=int(quiz_category['id'])+1
+                    )]
+            
+            questions = list(filter(lambda x: x['id'] not in previous_questions, questions))
+            question = None
+            if len(questions) > 1:
+                question = random.choice(questions)
+
+            print(question)
+            return jsonify({
+                'success': True,
+                'previousQuestions': previous_questions,
+                'currentQuestion': question,
+                'question': question
+            })
+        # except:
+        #     abort(422)
 
     '''
     @TODO: 

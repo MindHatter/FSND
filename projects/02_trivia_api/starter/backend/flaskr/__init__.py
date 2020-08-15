@@ -129,6 +129,7 @@ def create_app(test_config=None):
             )
             question.insert()
             return jsonify({
+                'id': question.id,
                 'success': True
             })
         except:
@@ -173,12 +174,15 @@ def create_app(test_config=None):
     def get_questions_by_category(c_id):
         category = Category.query.filter(Category.id == c_id).one_or_none()
 
+        print(category.type)
+
         if category is None:
             abort(404)
 
         try:
             questions = [q.format()
-                            for q in Question.query.filter(Category.id == c_id)]
+                         for q in Question.query.filter(Question.category == category.id)]
+            print(len(questions))
             questions_in_page = paginate(request, questions)
 
             return jsonify({

@@ -40,8 +40,8 @@ class TriviaTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Executed after reach test"""
-        self.question.delete()
-        self.category.delete()
+        Question.drop(Question)
+        Category.drop(Category)
 
 
     """
@@ -91,6 +91,38 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['questions'])
         self.assertTrue(data['total_questions'])
+
+    def test_search_question(self):
+        res = self.client().post('/questions/search', json={
+            'searchTerm': 'Who',
+        })
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+
+    def test_post_new_question(self):
+        res = self.client().post('/questions', json={
+            'question': 'Test question',
+            'answer': 'Test answer',
+            'difficulty':1,
+            'category':1
+        })
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['id'])
+
+    def test_delete_question(self):
+        res = self.client().delete(f'/questions/{self.question.id}')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['id'])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

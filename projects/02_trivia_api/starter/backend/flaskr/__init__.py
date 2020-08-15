@@ -23,7 +23,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
-    
+
     '''
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     '''
@@ -33,8 +33,10 @@ def create_app(test_config=None):
     '''
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,PUT,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-Methods',
+                             'GET,PATCH,PUT,POST,DELETE,OPTIONS')
         return response
     '''
 
@@ -45,7 +47,7 @@ def create_app(test_config=None):
     @app.route('/categories', methods=['GET'])
     def get_categories():
         categories = [c.type for c in Category.query.all()]
-        
+
         if len(categories) == 0:
             abort(404)
 
@@ -99,6 +101,7 @@ def create_app(test_config=None):
 
             question.delete()
             return jsonify({
+                "id": q_id,
                 "success": True,
             })
         except:
@@ -119,10 +122,10 @@ def create_app(test_config=None):
         try:
             data = request.get_json()
             question = Question(
-                question = data['question'],
-                answer = data['answer'],
-                difficulty = int(data['difficulty']),
-                category = int(data['category'])+1
+                question=data['question'],
+                answer=data['answer'],
+                difficulty=int(data['difficulty']),
+                category=int(data['category'])+1
             )
             question.insert()
             return jsonify({
@@ -147,14 +150,15 @@ def create_app(test_config=None):
             search_term = request.get_json()['searchTerm']
         except:
             abort(422)
-        
-        matches = Question.query.filter(Question.question.ilike('%{}%'.format(search_term)))
+
+        matches = Question.query.filter(
+            Question.question.ilike('%{}%'.format(search_term)))
         questions = [q.format() for q in matches]
 
         return jsonify({
-            'success':True,
-            'questions':questions,
-            'total_questions':len(questions),
+            'success': True,
+            'questions': questions,
+            'total_questions': len(questions),
         })
 
     '''
@@ -167,13 +171,14 @@ def create_app(test_config=None):
     '''
     @app.route('/categories/<int:c_id>/questions', methods=['GET'])
     def get_questions_by_category(c_id):
-        category = Category.query.filter(Category.id == c_id+1).one_or_none()
+        category = Category.query.filter(Category.id == c_id).one_or_none()
 
         if category is None:
             abort(404)
 
         try:
-            questions = [q.format() for q in Question.query.filter_by(category=c_id+1).all()]
+            questions = [q.format()
+                            for q in Question.query.filter(Category.id == c_id)]
             questions_in_page = paginate(request, questions)
 
             return jsonify({
@@ -199,30 +204,31 @@ def create_app(test_config=None):
     @app.route('/quizzes', methods=['POST'])
     def get_quizz_question_question():
         # try:
-            data = request.get_json()
-            previous_questions = data.get('previous_questions', None)
-            quiz_category = data.get('quiz_category', None)
+        data = request.get_json()
+        previous_questions = data.get('previous_questions', None)
+        quiz_category = data.get('quiz_category', None)
 
-            print(previous_questions, quiz_category)
-            if quiz_category['type'] == 'click':
-                questions = [q.format() for q in Question.query.all()]
-            else:
-                questions = [q.format() for q in Question.query.filter_by(
-                    category=int(quiz_category['id'])+1
-                    )]
-            
-            questions = list(filter(lambda x: x['id'] not in previous_questions, questions))
-            question = None
-            if len(questions) > 1:
-                question = random.choice(questions)
+        print(previous_questions, quiz_category)
+        if quiz_category['type'] == 'click':
+            questions = [q.format() for q in Question.query.all()]
+        else:
+            questions = [q.format() for q in Question.query.filter_by(
+                category=int(quiz_category['id'])+1
+            )]
 
-            print(question)
-            return jsonify({
-                'success': True,
-                'previousQuestions': previous_questions,
-                'currentQuestion': question,
-                'question': question
-            })
+        questions = list(
+            filter(lambda x: x['id'] not in previous_questions, questions))
+        question = None
+        if len(questions) > 1:
+            question = random.choice(questions)
+
+        print(question)
+        return jsonify({
+            'success': True,
+            'previousQuestions': previous_questions,
+            'currentQuestion': question,
+            'question': question
+        })
         # except:
         #     abort(422)
 
@@ -238,7 +244,7 @@ def create_app(test_config=None):
             'error': 404,
             'message': 'Resource not found'
         }), 404
-    
+
     @app.errorhandler(422)
     def unprocessable(error):
         return jsonify({

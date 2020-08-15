@@ -125,7 +125,7 @@ def create_app(test_config=None):
                 question=data['question'],
                 answer=data['answer'],
                 difficulty=int(data['difficulty']),
-                category=int(data['category'])+1
+                category=int(data['category'])
             )
             question.insert()
             return jsonify({
@@ -207,34 +207,31 @@ def create_app(test_config=None):
     '''
     @app.route('/quizzes', methods=['POST'])
     def get_quizz_question_question():
-        # try:
-        data = request.get_json()
-        previous_questions = data.get('previous_questions', None)
-        quiz_category = data.get('quiz_category', None)
+        try:
+            data = request.get_json()
+            previous_questions = data.get('previous_questions', None)
+            quiz_category = data.get('quiz_category', None)
 
-        print(previous_questions, quiz_category)
-        if quiz_category['type'] == 'click':
-            questions = [q.format() for q in Question.query.all()]
-        else:
-            questions = [q.format() for q in Question.query.filter_by(
-                category=int(quiz_category['id'])+1
-            )]
+            if quiz_category[0] == 'click':
+                questions = [q.format() for q in Question.query.all()]
+            else:
+                questions = [q.format() for q in Question.query.filter_by(
+                    category=int(quiz_category[1])
+                )]
 
-        questions = list(
-            filter(lambda x: x['id'] not in previous_questions, questions))
-        question = None
-        if len(questions) > 1:
-            question = random.choice(questions)
+            questions = list(
+                filter(lambda x: x['id'] not in previous_questions, questions))
+            question = None
+            if len(questions) > 0:
+                question = random.choice(questions)
 
-        print(question)
-        return jsonify({
-            'success': True,
-            'previousQuestions': previous_questions,
-            'currentQuestion': question,
-            'question': question
-        })
-        # except:
-        #     abort(422)
+            return jsonify({
+                'success': True,
+                'previousQuestions': previous_questions,
+                'question': question
+            })
+        except:
+            abort(422)
 
     '''
     @TODO: 

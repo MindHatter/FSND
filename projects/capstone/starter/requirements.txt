@@ -1,0 +1,8 @@
+gunicorn
+python-jose
+Flask
+Flask-SQLAlchemy
+SQLAlchemy
+Flask-Cors
+Flask-Migrate
+Flask-Script

@@ -121,6 +121,7 @@ def verify_decode_jwt(token):
                 'n': key['n'],
                 'e': key['e']
             }
+
     if rsa_key:
         try:
             payload = jwt.decode(token,
@@ -146,12 +147,14 @@ def verify_decode_jwt(token):
                     'description':
                     'Incorrect claims. Please, check the audience and issuer.'
                 }, 401)
+
         except Exception:
             raise AuthError(
                 {
                     'code': 'invalid_header',
                     'description': 'Unable to parse authentication token.'
                 }, 400)
+
     raise AuthError(
         {
             'code': 'invalid_header',

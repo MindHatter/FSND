@@ -2,15 +2,12 @@ import os
 from flask import Flask, request, jsonify, abort
 import json
 from flask_cors import CORS
-
 from models import setup_db, Actors, Movies
 from auth import AuthError, requires_auth
 
 def create_app(test_config=None):
-    # create and configure the app
     app = Flask(__name__)
     setup_db(app)
-
     cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
     @app.after_request
@@ -25,7 +22,7 @@ def create_app(test_config=None):
     def get_greeting():
         return jsonify({
             'success': True,
-            'text': "Welcome to the Starring Agency!"
+            'text': "Welcome!"
         })
 
     @app.route('/actors', methods=['GET'])
@@ -34,9 +31,6 @@ def create_app(test_config=None):
         try:
             actor = Actors.query.order_by(Actors.id).all()
             actors = [d.format() for d in actor]
-
-            if len(actors) == 0:
-                abort(404)
 
             return jsonify({
                 'success': True,
@@ -52,7 +46,6 @@ def create_app(test_config=None):
     def get_actors_by_id(*args, **kwargs):
 
         u_id = kwargs['actor_id']
-
         try:
             actors = Actors.query.filter(Actors.id == u_id).one_or_none()
             
@@ -74,9 +67,6 @@ def create_app(test_config=None):
         try:
             movie = Movies.query.order_by(Movies.id).all()
             movies = [d.format() for d in movie]
-
-            if len(movies) == 0:
-                abort(404)
 
             return jsonify({
                 'success': True,
@@ -232,8 +222,8 @@ def create_app(test_config=None):
     def delete_actors(*args, **kwargs):
 
         d_id = kwargs['actor_id']
-
         try:
+            int(d_id)
             actors = Actors.query.filter(Actors.id == d_id).one_or_none()
 
             if actors is None:
@@ -282,19 +272,19 @@ def create_app(test_config=None):
     @app.errorhandler(422)
     def unprocessable(error):
         return jsonify({
-                        "success": False,
-                        "error": 422,
-                        "message": "unprocessable"
-                        }), 422
+            "success": False,
+            "error": 422,
+            "message": "unprocessable"
+        }), 422
 
 
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
-                        "success": False,
-                        "error": 404,
-                        "message": "resource not found"
-                        }), 404
+            "success": False,
+            "error": 404,
+            "message": "resource not found"
+        }), 404
 
 
     @app.errorhandler(400)
@@ -303,7 +293,7 @@ def create_app(test_config=None):
             'success': False,
             'error': 400,
             'message': 'bad request'
-        })
+        }), 400
 
 
     @app.errorhandler(401)
@@ -312,7 +302,7 @@ def create_app(test_config=None):
             'success': False,
             'error': 401,
             'message': 'Unauthorized'
-        })
+        }), 401
 
 
     @app.errorhandler(403)
@@ -321,7 +311,7 @@ def create_app(test_config=None):
             'success': False,
             'error': 403,
             'message': 'forbidden'
-        })
+        }), 403
 
 
     @app.errorhandler(AuthError)

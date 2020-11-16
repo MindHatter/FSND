@@ -2,6 +2,15 @@
 
 This Capstone is the final project of the Udacity Full Stack Nano Degree (FSND) program. I enrolled in the program to get an introduction and practical experience in working with databases, API's, cyber securtiy and automated deployment & testing of systems. This is the start to refresh my technical skills and is a great foundational program that has put me on the right course.
 
+The Capstone project requires a developer to utilise all the skills and experience they have acquired in a single program. The skills I have acquired include:
+
+* SQL and Data Modelling for the Web
+* API Development and Documentation
+* Identity and Access Management
+* Server Deployment, Containerization and Testing
+
+I have enjoyed the program, as it was challenging enough to also be rewarding, but simultaneously none of the challenges were unsurmountable as their sufficient support to overcome them.
+
 # Overview
 
 The Casting Agency is a company that is responsible for creating movies and managing and assigning actors to those movies. 
@@ -22,7 +31,7 @@ The Casting Agency is a company that is responsible for creating movies and mana
     * "get:actors" to view all actors or one of them
     * "get:movies" to view all movies or one of them
     
-    Director has assistant permissions and: 
+    Director has an assistant permissions and: 
     * "delete:actors" to remove actors
     * "delete:movies" to remove products
     * "patch:actors" to update actors
@@ -41,29 +50,8 @@ The Casting Agency is a company that is responsible for creating movies and mana
     flask run reload
     ```
 
-5. API endpoints.
-    ```
-    GET /actors
-    GET /actors/<int:actor_id>
-    GET /movies
-    GET /movies/<int:movie_id>
-    POST /actors {name, age, gender}
-    POST /movies {title, releasedate}
-    PATCH /actors/<int:actor_id> [name, age, gender]
-    PATCH /movies [title, releasedate]
-    DELETE /actors/<int:actor_id>
-    DELETE /movies/<int:movie_id>
-    ```
-
-    
-
-
-    You can use following template with curl for checking API endpoints:
-    ```
-    curl --request GET 'http://127.0.0.1:5000/<api endpoint>' --header 'authorization: Bearer <assistant/director token>'
-    ```
 # API 
-Use default Flask URL ```http://127.0.0.1:5000/``` or Heroku URL ```https://infinite-basin-08333.herokuapp.com/``` for API requesting
+Use a default Flask URL ```http://127.0.0.1:5000/``` or Heroku URL ```https://infinite-basin-08333.herokuapp.com/``` for API requesting
 
 ## API Parameters
 
@@ -79,7 +67,8 @@ The following input parameters are required for a client record:
 * ***releasedate*** is a string that describes a release date of movie
 
 **Use curl utility from your Command Line Interface**:
-### Create API
+
+## Create API
 * Request
     ```
     curl --request POST 'http://127.0.0.1:5000/actors' 
@@ -117,11 +106,11 @@ The following input parameters are required for a client record:
     {
         "success": true,
         "message": "Movie Successfully Added!",
-        "actors": [Movie]
+        "movies": [Movie]
     }
     ```
 
-### Read API
+## Read API
 * Request
     ```
     curl --request GET 'http://127.0.0.1:5000/actors' --header 'authorization: Bearer <token>'
@@ -148,7 +137,7 @@ The following input parameters are required for a client record:
     }
     ```
 
-### Update API
+## Update API
 * Request
     ```
     curl --request PATCH 'http://127.0.0.1:5000/actors/<actor_id>' --header 'authorization: Bearer <token>'
@@ -188,7 +177,7 @@ The following input parameters are required for a client record:
     }
     ```
 
-### Delete API
+## Delete API
 * Request
     ```
     curl --request DELETE 'http://127.0.0.1:5000/actors/<actor_id>' --header 'authorization: Bearer <token>'

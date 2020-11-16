@@ -5,6 +5,7 @@ from flask_cors import CORS
 from models import setup_db, Actors, Movies
 from auth import AuthError, requires_auth
 
+
 def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
@@ -40,15 +41,13 @@ def create_app(test_config=None):
         except AttributeError:
             abort(422)
 
-
     @app.route('/actors/<int:actor_id>', methods=['GET'])
     @requires_auth('get:actors')
     def get_actors_by_id(*args, **kwargs):
-
         u_id = kwargs['actor_id']
         try:
             actors = Actors.query.filter(Actors.id == u_id).one_or_none()
-            
+
             if actors is None:
                 abort(404)
 
@@ -59,7 +58,6 @@ def create_app(test_config=None):
 
         except AttributeError:
             abort(422)
-
 
     @app.route('/movies', methods=['GET'])
     @requires_auth('get:movies')
@@ -75,7 +73,6 @@ def create_app(test_config=None):
 
         except AttributeError:
             abort(422)
-
 
     @app.route('/movies/<int:movie_id>', methods=['GET'])
     @requires_auth('get:movies')
@@ -96,7 +93,6 @@ def create_app(test_config=None):
 
         except AttributeError:
             abort(422)
-
 
     @app.route('/actors', methods=['POST'])
     @requires_auth('post:actors')
@@ -119,7 +115,6 @@ def create_app(test_config=None):
         except AttributeError:
             abort(422)
 
-
     @app.route('/movies', methods=['POST'])
     @requires_auth('post:movies')
     def create_movies(*args, **kwargs):
@@ -139,7 +134,6 @@ def create_app(test_config=None):
 
         except AttributeError:
             abort(422)
-
 
     @app.route('/actors/<int:actor_id>', methods=['PATCH'])
     @requires_auth('patch:actors')
@@ -180,7 +174,6 @@ def create_app(test_config=None):
         except AttributeError:
             abort(422)
 
-
     @app.route('/movies/<int:movies_id>', methods=['PATCH'])
     @requires_auth('patch:movies')
     def update_movies(*args, **kwargs):
@@ -216,7 +209,6 @@ def create_app(test_config=None):
         except AttributeError:
             abort(422)
 
-
     @app.route('/actors/<int:actor_id>', methods=['DELETE'])
     @requires_auth('delete:actors')
     def delete_actors(*args, **kwargs):
@@ -239,7 +231,6 @@ def create_app(test_config=None):
 
         except AttributeError:
             abort(422)
-
 
     @app.route('/movies/<int:movie_id>', methods=['DELETE'])
     @requires_auth('delete:movies')
@@ -264,11 +255,6 @@ def create_app(test_config=None):
         except AttributeError:
             abort(422)
 
-
-    # Error Handling
-    '''
-    Example error handling for unprocessable entity
-    '''
     @app.errorhandler(422)
     def unprocessable(error):
         return jsonify({
@@ -276,7 +262,6 @@ def create_app(test_config=None):
             "error": 422,
             "message": "unprocessable"
         }), 422
-
 
     @app.errorhandler(404)
     def not_found(error):
@@ -286,7 +271,6 @@ def create_app(test_config=None):
             "message": "resource not found"
         }), 404
 
-
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({
@@ -294,7 +278,6 @@ def create_app(test_config=None):
             'error': 400,
             'message': 'bad request'
         }), 400
-
 
     @app.errorhandler(401)
     def unauthorized(error):
@@ -304,7 +287,6 @@ def create_app(test_config=None):
             'message': 'Unauthorized'
         }), 401
 
-
     @app.errorhandler(403)
     def forbidden(error):
         return jsonify({
@@ -313,7 +295,6 @@ def create_app(test_config=None):
             'message': 'forbidden'
         }), 403
 
-
     @app.errorhandler(AuthError)
     def error_auth(ex):
         response = jsonify(ex.error)
@@ -321,6 +302,7 @@ def create_app(test_config=None):
         return response
 
     return app
+
 
 app = create_app()
 

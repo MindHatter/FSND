@@ -46,6 +46,7 @@ class Movies(db.Model):
             'releasedate': self.releasedate
         }
 
+
 class Actors(db.Model):
     __tablename__ = 'actors'
 

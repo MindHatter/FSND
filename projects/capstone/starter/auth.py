@@ -9,21 +9,11 @@ AUTH0_DOMAIN = 'dev-mh.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'https://localhost:5001'
 
-## AuthError Exception
-'''
-AuthError Exception
-A standardized way to communicate auth failure modes
-'''
+
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
         self.status_code = status_code
-
-
-## Auth Header
-'''
-@TODO implement get_token_auth_header() method [DONE]
-'''
 
 
 def get_token_auth_header():
@@ -64,11 +54,6 @@ def get_token_auth_header():
     return token
 
 
-'''
-@TODO implement check_permissions(permission, payload) method [DONE]
-'''
-
-
 def check_permissions(permission, payload):
     """
     Helper which checks if the decoded JWT has the required permission
@@ -90,11 +75,6 @@ def check_permissions(permission, payload):
                 'code': 'invalid_permissions',
                 'description': 'User does not have any roles attached'
             }, 401)
-
-
-'''
-@TODO implement verify_decode_jwt(token) method [DONE]
-'''
 
 
 def verify_decode_jwt(token):
@@ -160,11 +140,6 @@ def verify_decode_jwt(token):
             'code': 'invalid_header',
             'description': 'Unable to find the appropriate key.'
         }, 400)
-
-
-'''
-@TODO implement @requires_auth(permission) decorator method [DONE]
-'''
 
 
 def requires_auth(permission=''):
